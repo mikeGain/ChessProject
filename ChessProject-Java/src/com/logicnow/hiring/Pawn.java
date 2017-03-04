@@ -1,59 +1,67 @@
 package com.logicnow.hiring;
 
-public class Pawn {
+public class Pawn extends ChessPieceImpl {
 
-    private ChessBoard chessBoard;
-    private int xCoordinate;
-    private int yCoordinate;
-    private PieceColor pieceColor;
+	private int maxMoveStep;
+	
+	
+	public Pawn(PieceColor pieceColor) {
+		super(pieceColor);
+		
+		this.maxMoveStep = 2;	
+		this.pieceType = PieceType.PAWN;
+		
+	}
 
-    public Pawn(PieceColor pieceColor) {
-        this.pieceColor = pieceColor;
-    }
+	@Override
+	protected void executeMove(MovementType movementType, int newX, int newY) {
+		super.executeMove(movementType, newX, newY);
+		this.maxMoveStep = 1;
 
-    public ChessBoard getChesssBoard() {
-        return chessBoard;
-    }
+	}
+	
+	private boolean isValidMoveForward(int newX, int newY){
+		if (this.xCoordinate != newX){
+			return false;
+		}
+		
+		int yDifference = newY - this.yCoordinate;
+		
+		if  (Math.abs(yDifference) > this.maxMoveStep){
+			return false;
+		}
+		
+		if (this.pieceColor == PieceColor.BLACK && yDifference >= 0 ){
+			return false;
+		}
+		else if (this.pieceColor == PieceColor.WHITE &&  yDifference <= 0){
+			return false;
+			
+		}
+		
+		return true;
+	}
+	
+	protected boolean isValidMove(MovementType movementType, int newX, int newY) {
+		boolean rtn = false;
 
-    public void setChessBoard(ChessBoard chessBoard) {
-        this.chessBoard = chessBoard;
-    }
+		if (super.isValidMove(movementType, newX, newY)) {
+			// Pawns Can't Move onto occupied square
+			// unless capturing where they can move onto occupied or unoccupied
+			// (if en passant)
+			// Can move 2 on first move and only 1 thereafter
 
-    public int getXCoordinate() {
-        return xCoordinate;
-    }
+			if (movementType.equals(MovementType.MOVE) && isValidMoveForward( newX,  newY)
+					&& !this.chessBoard.isSquareOccupied(newX, newY)) {
+				rtn = true;
+			}
+		} else if (movementType.equals(MovementType.CAPTURE)) {
+			throw new UnsupportedOperationException("Capture Not Implemented");
+		}
 
-    public void setXCoordinate(int value) {
-        this.xCoordinate = value;
-    }
+		return rtn;
+	}
 
-    public int getYCoordinate() {
-        return yCoordinate;
-    }
+	
 
-    public void setYCoordinate(int value) {
-        this.yCoordinate = value;
-    }
-
-    public PieceColor getPieceColor() {
-        return this.pieceColor;
-    }
-
-    private void setPieceColor(PieceColor value) {
-        pieceColor = value;
-    }
-
-    public void Move(MovementType movementType, int newX, int newY) {
-        throw new UnsupportedOperationException("Need to implement Pawn.Move()") ;
-    }
-
-    @Override
-    public String toString() {
-        return CurrentPositionAsString();
-    }
-
-    protected String CurrentPositionAsString() {
-        String eol = System.lineSeparator();
-        return String.format("Current X: {1}{0}Current Y: {2}{0}Piece Color: {3}", eol, xCoordinate, yCoordinate, pieceColor);
-    }
 }
