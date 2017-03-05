@@ -3,8 +3,7 @@ package com.logicnow.hiring;
 public class Pawn extends ChessPieceImpl {
 
 	private int maxMoveStep;
-	
-	
+		
 	public Pawn(PieceColor pieceColor) {
 		super(pieceColor);
 		
@@ -16,21 +15,21 @@ public class Pawn extends ChessPieceImpl {
 	@Override
 	protected void executeMove(MovementType movementType, int newX, int newY) {
 		super.executeMove(movementType, newX, newY);
+		//Pawn has moved, can only move one space from now on
 		this.maxMoveStep = 1;
 
 	}
 	
 	private boolean isValidMoveForward(int newX, int newY){
-		if (this.xCoordinate != newX){
-			return false;
-		}
-		
+				
 		int yDifference = newY - this.yCoordinate;
 		
+		//Check the number of steps isn't being exceeded
 		if  (Math.abs(yDifference) > this.maxMoveStep){
 			return false;
 		}
 		
+		// Check piece is moving at least once square in the correct direction
 		if (this.pieceColor == PieceColor.BLACK && yDifference >= 0 ){
 			return false;
 		}

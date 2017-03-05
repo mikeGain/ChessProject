@@ -180,4 +180,35 @@ public class ChessBoardTest extends TestCase {
         
     }
     
+    @Test
+    public void testMovePiece_MultiplePieceMoves_Check_State(){
+    	ChessPiece whitePiece = factory.createChessPiece(PieceType.PAWN, PieceColor.WHITE);
+    	ChessPiece blackPiece = factory.createChessPiece(PieceType.PAWN, PieceColor.BLACK);
+        
+    	testSubject.Add(whitePiece, 6, 2);
+    	testSubject.Add(blackPiece, 5, 6);
+    	
+        testSubject.MovePiece(MovementType.MOVE, 6, 2, 6, 4);
+        testSubject.MovePiece(MovementType.MOVE, 6, 4, 6, 5);
+        
+        testSubject.MovePiece(MovementType.MOVE, 5, 6, 5, 4);
+        testSubject.MovePiece(MovementType.MOVE, 5, 4, 5, 3);
+        
+        Assert.assertTrue(testSubject.isSquareOccupied(6, 5));
+        Assert.assertTrue(testSubject.isSquareOccupied(5, 3));
+        
+        Assert.assertFalse(testSubject.isSquareOccupied(6, 2));
+        Assert.assertFalse(testSubject.isSquareOccupied(6, 4));
+        Assert.assertFalse(testSubject.isSquareOccupied(5, 6));
+        Assert.assertFalse(testSubject.isSquareOccupied(5, 4));
+
+        
+       
+        assertEquals(6, whitePiece.getXCoordinate());
+        assertEquals(5, whitePiece.getYCoordinate());
+        assertEquals(5, blackPiece.getXCoordinate());
+        assertEquals(3, blackPiece.getYCoordinate());
+        
+    }
+    
 }

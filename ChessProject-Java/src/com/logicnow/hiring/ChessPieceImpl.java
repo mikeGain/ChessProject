@@ -1,7 +1,9 @@
 package com.logicnow.hiring;
 
-public abstract class ChessPieceImpl implements ChessPiece{
+public abstract class ChessPieceImpl implements ChessPiece {
 	protected ChessBoard chessBoard;
+	protected int previousXCoordinate;
+	protected int previousYCoordinate;
 	protected int xCoordinate;
 	protected int yCoordinate;
 	protected PieceColor pieceColor;
@@ -13,14 +15,20 @@ public abstract class ChessPieceImpl implements ChessPiece{
 
 	public ChessPieceImpl(PieceColor pieceColor) {
 		this.pieceColor = pieceColor;
+		this.previousXCoordinate = -1;
+		this.previousYCoordinate = -1;
 		this.xCoordinate = -1;
 		this.yCoordinate = -1;
 
 	}
 
-	
-	public void setChessBoard(ChessBoard chessBoard) {
+	public void attachChessBoard(ChessBoard chessBoard) {
 		this.chessBoard = chessBoard;
+
+	}
+
+	public int getPreviousXCoordinate() {
+		return this.previousXCoordinate;
 	}
 
 	public int getXCoordinate() {
@@ -29,6 +37,10 @@ public abstract class ChessPieceImpl implements ChessPiece{
 
 	public void setXCoordinate(int value) {
 		this.xCoordinate = value;
+	}
+
+	public int getPreviousYCoordinate() {
+		return this.previousYCoordinate;
 	}
 
 	public int getYCoordinate() {
@@ -42,16 +54,19 @@ public abstract class ChessPieceImpl implements ChessPiece{
 	public PieceColor getPieceColor() {
 		return this.pieceColor;
 	}
-	
-	public boolean hasMoved(int fromX, int fromY){
-		return !(this.xCoordinate == fromX && this.yCoordinate == fromY);
-	}
-	
+
 	public void Move(MovementType movementType, int newX, int newY) {
 		// Template for executing Move
 		// Implementations may be overridden by concrete classes
+		// As validation and move logic is different for each piece
 		if (isValidMove(movementType, newX, newY)) {
+
+			// Execute the move, changing piece state
 			executeMove(movementType, newX, newY);
+
+			// Notify all interested objects of change
+			notifyObservers();
+
 		}
 	}
 
@@ -64,8 +79,7 @@ public abstract class ChessPieceImpl implements ChessPiece{
 			// If destination is same as current position not valid
 			if (this.xCoordinate == newX && this.yCoordinate == newY) {
 				rtn = false;
-			}
-			else{
+			} else {
 				rtn = true;
 			}
 
@@ -74,9 +88,19 @@ public abstract class ChessPieceImpl implements ChessPiece{
 
 	}
 
-	protected  void executeMove(MovementType movementType, int newX, int newY){
-		this.xCoordinate = newX;
-		this.yCoordinate = newY;
+	protected void executeMove(MovementType movementType, int newX, int newY) {
+		// Only MOVE implemented
+		//TODO:Implement CAPTURE
+		if (movementType.equals(MovementType.MOVE)) {
+			this.previousXCoordinate = this.xCoordinate;
+			this.previousYCoordinate = this.yCoordinate;
+			this.xCoordinate = newX;
+			this.yCoordinate = newY;
+		}
+	}
+
+	protected void notifyObservers() {
+		this.chessBoard.update(this);
 	}
 
 	@Override
@@ -89,5 +113,5 @@ public abstract class ChessPieceImpl implements ChessPiece{
 		return String.format("Current X: {1}{0}Current Y: {2}{0}Piece Color: {3}", eol, xCoordinate, yCoordinate,
 				pieceColor);
 	}
-	
+
 }

@@ -1,14 +1,19 @@
 package com.logicnow.hiring;
 
 public interface ChessPiece {
+	
 	public PieceType getPieceType();
 	
-	public void setChessBoard(ChessBoard chessBoard);
+	public void attachChessBoard(ChessBoard chessBoard);
+	
+	public int getPreviousXCoordinate();
 	
 	public int getXCoordinate();
 	
 	public void setXCoordinate(int value);
-
+	
+	public int getPreviousYCoordinate();
+	
 	public int getYCoordinate();
 	
 	public void setYCoordinate(int value);
@@ -17,7 +22,7 @@ public interface ChessPiece {
 	
 	public void Move(MovementType movementType, int newX, int newY);
 	
-	public boolean hasMoved(int fromX, int fromY);
+	
 	
 	
 }

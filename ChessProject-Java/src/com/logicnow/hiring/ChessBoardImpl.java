@@ -14,12 +14,12 @@ public class ChessBoardImpl implements ChessBoard {
 
 	public ChessBoardImpl() {
 		this.pieces = new ChessPiece[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT];
-		
+
 		// Initialise Data Structures to keep track of numbers of pieces
 		this.pieceCounts = new HashMap<PieceColor, HashMap<PieceType, Integer>>();
 		this.pieceCounts.put(PieceColor.BLACK, new HashMap<PieceType, Integer>());
 		this.pieceCounts.put(PieceColor.WHITE, new HashMap<PieceType, Integer>());
-		
+
 		// Set the maximum numbers for each of the chess piece types;
 		setMaxPieceCounts();
 
@@ -29,10 +29,12 @@ public class ChessBoardImpl implements ChessBoard {
 		this.maxPieceCounts = new HashMap<PieceType, Integer>();
 		this.maxPieceCounts.put(PieceType.PAWN, 8);
 		// TODO: extend for other piece types
+		// e.g. this.maxPieceCounts.put(PieceType.KING, 1);
 	}
 
 	private void incrementPieceCount(ChessPiece piece, Integer currentCount) {
-		this.pieceCounts.get(piece.getPieceColor()).put(piece.getPieceType(), new Integer(currentCount.intValue() + 1));
+		this.pieceCounts.get(piece.getPieceColor()).put(piece.getPieceType(), 
+							 new Integer(currentCount.intValue() + 1));
 
 	}
 
@@ -61,7 +63,9 @@ public class ChessBoardImpl implements ChessBoard {
 
 				piece.setXCoordinate(xCoordinate);
 				piece.setYCoordinate(yCoordinate);
-				piece.setChessBoard(this);
+				
+				//attach Chess Board to Chess Piece
+				piece.attachChessBoard(this);
 				incrementPieceCount(piece, pieceCount);
 				pieces[xCoordinate][yCoordinate] = piece;
 
@@ -93,7 +97,6 @@ public class ChessBoardImpl implements ChessBoard {
 
 	}
 
-	
 	private ChessPiece getPieceAt(int xCoordinate, int yCoordinate) {
 		return pieces[xCoordinate][yCoordinate];
 	}
@@ -102,10 +105,19 @@ public class ChessBoardImpl implements ChessBoard {
 	public void MovePiece(MovementType movementType, int fromX, int fromY, int toX, int toY) {
 		ChessPiece piece = this.getPieceAt(fromX, fromY);
 		piece.Move(movementType, toX, toY);
-		if (piece.hasMoved(fromX, fromY)) {
-			this.pieces[fromX][fromY] = null;//remove from original square
-			this.pieces[toX][toY] = piece;//place in new square
-		}
+
+	}
+
+	@Override
+	public void update(ChessPiece updatedPiece) {
+		this.pieces[updatedPiece.getPreviousXCoordinate()][updatedPiece.getPreviousYCoordinate()] = null;// remove
+																											// from
+																											// original
+																											// square
+		this.pieces[updatedPiece.getXCoordinate()][updatedPiece.getYCoordinate()] = updatedPiece;// place
+																									// in
+																									// new
+																									// square
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.logicnow.hiring;
 
-public interface ChessBoard {
+public interface ChessBoard extends ChessPieceObserver{
 	public static int MAX_BOARD_WIDTH = 8;
 	public static int MAX_BOARD_HEIGHT = 8;
 	
@@ -11,7 +11,6 @@ public interface ChessBoard {
 	public boolean IsLegalBoardPosition(int xCoordinate, int yCoordinate);
 
 	public void MovePiece(MovementType moveType, int fromX, int fromY, int toX, int toY);
-
-
-
+	
+	
 }

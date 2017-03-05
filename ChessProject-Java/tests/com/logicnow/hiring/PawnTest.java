@@ -10,12 +10,16 @@ public class PawnTest {
 
     private ChessBoard chessBoard;
     private ChessPiece testSubject;
-    private ChessPieceFactory factory;
-
+    
+    private String pawnToString(ChessPiece pawn){
+    	String eol = System.lineSeparator();
+		return String.format("Current X: {1}{0}Current Y: {2}{0}Piece Color: {3}", eol, pawn.getPreviousXCoordinate(), pawn.getYCoordinate(),
+				pawn.getPieceColor());
+    }
+    
     @Before
     public void setUp() {
-        this.factory = new ChessPieceFactory();
-    	this.chessBoard = new ChessBoardImpl();
+        this.chessBoard = new ChessBoardImpl();
         this.testSubject = new Pawn(PieceColor.BLACK);
     }
 
@@ -58,7 +62,7 @@ public class PawnTest {
     }
     
     @Test
-    public void testPawn_Move_White_2Move_2Steps_DoesNotMove() {
+    public void testPawn_Move_White_2nd_Move_2Steps_DoesNotMove() {
     	this.testSubject = new Pawn(PieceColor.WHITE);
     	chessBoard.Add(testSubject, 6, 2);
         testSubject.Move(MovementType.MOVE, 6, 4);
@@ -77,7 +81,7 @@ public class PawnTest {
     }
     
     @Test
-    public void testPawn_Move_Black_2Move_2Steps_DoesNotMove() {
+    public void testPawn_Move_Black_2nd_Move_2Steps_DoesNotMove() {
     	this.testSubject = new Pawn(PieceColor.BLACK);
     	chessBoard.Add(testSubject, 6, 6);
         testSubject.Move(MovementType.MOVE, 6, 4);
@@ -123,19 +127,65 @@ public class PawnTest {
     }
     
     @Test
-    public void testHasMoved_TRUE() {
-    	this.testSubject = new Pawn(PieceColor.BLACK);
-    	chessBoard.Add(testSubject, 6, 6);
-        testSubject.Move(MovementType.MOVE, 6, 5);
-        assertTrue(testSubject.hasMoved(6, 6));
+    public void testToStringNotOnBoard(){
+    	assertEquals(testSubject.toString(),pawnToString(testSubject));
     }
     
     @Test
-    public void testHasMoved_FALSE() {
-    	this.testSubject = new Pawn(PieceColor.BLACK);
-    	chessBoard.Add(testSubject, 6, 6);
-        testSubject.Move(MovementType.MOVE, 6, 7);
-        assertFalse(testSubject.hasMoved(6, 6));
+    public void testToStringOnBoard(){
+    	chessBoard.Add(testSubject, 6, 2);
+    	assertEquals(testSubject.toString(),pawnToString(testSubject));
     }
-
+    
+    @Test
+    public void testGetPreviousXCoordinate_Not_On_Board(){
+    	assertEquals(testSubject.getPreviousXCoordinate(),-1);
+    }
+    
+    @Test
+    public void testGetPreviousXCoordinate_On_Board(){
+    	chessBoard.Add(testSubject, 6, 2);
+    	assertEquals(testSubject.getPreviousXCoordinate(),-1);
+    }
+    
+    @Test
+    public void testGetPreviousXCoordinate_After_1_Move(){
+    	chessBoard.Add(testSubject, 6, 6);
+    	testSubject.Move(MovementType.MOVE, 6, 5);
+    	assertEquals(testSubject.getPreviousXCoordinate(),6);
+    }
+    
+    @Test
+    public void testGetPreviousXCoordinate_After_Multiple_Moves(){
+    	chessBoard.Add(testSubject, 6, 6);
+    	testSubject.Move(MovementType.MOVE, 6, 5);
+    	testSubject.Move(MovementType.MOVE, 6, 4);
+    	assertEquals(testSubject.getPreviousXCoordinate(),6);
+    }
+    
+    @Test
+    public void testGetPreviousYCoordinate_Not_On_Board(){
+    	assertEquals(testSubject.getPreviousYCoordinate(),-1);
+    }
+    
+    @Test
+    public void testGetPreviousYCoordinate_On_Board(){
+    	chessBoard.Add(testSubject, 6, 2);
+    	assertEquals(testSubject.getPreviousYCoordinate(),-1);
+    }
+    
+    @Test
+    public void testGetPreviousYCoordinate_After_1_Move(){
+    	chessBoard.Add(testSubject, 6, 6);
+    	testSubject.Move(MovementType.MOVE, 6, 5);
+    	assertEquals(testSubject.getPreviousYCoordinate(),6);
+    }
+    
+    @Test
+    public void testGetPreviousYCoordinate_After_Multiple_Moves(){
+    	chessBoard.Add(testSubject, 6, 6);
+    	testSubject.Move(MovementType.MOVE, 6, 5);
+    	testSubject.Move(MovementType.MOVE, 6, 4);
+    	assertEquals(testSubject.getPreviousYCoordinate(),5);
+    }
 }
