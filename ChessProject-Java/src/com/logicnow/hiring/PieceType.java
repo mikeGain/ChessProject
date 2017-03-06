@@ -1,5 +1,13 @@
 package com.logicnow.hiring;
 
+/**
+ * Valid ChessPiece types
+ * <li>{@link #PAWN}</li>
+ *
+ */
 public enum PieceType {
- PAWN;
+	/**
+	 * The Pawn chess piece type
+	 */
+	PAWN;
 }
